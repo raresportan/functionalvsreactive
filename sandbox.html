@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+        let origin;
+
+        window.onerror = (msg, url, lineNo, columnNo, error) => {
+            origin.postMessage({ msg, lineNo: lineNo - 2 }, '*');
+        }
+
+        window.addEventListener('message', e => {
+            origin = e.source;
+
+            const { imports, code } = e.data;
+            if (imports) {
+                imports.forEach(i => {
+                    const currentScript = document.querySelector(`script[src="${i}"]`);
+                    if (!currentScript) {
+                        console.log('Import', i)
+                        const script = document.createElement('script');
+                        script.src = i;
+                        document.head.appendChild(script);
+                    }
+                })
+            }
+            else if (code) {
+                // here the code is evaluated in the iframe
+                const result = Function(code)(window);
+                origin.postMessage({ result }, '*');
+            }
+        });
+    </script>
+</head>
+
+</html>

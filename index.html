@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Functional vs Reactive</title>
+    <link rel="shortcut icon" href="js.ico">
+    <style type="text/css" media="screen">
+        html,
+        body,
+        #container {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+
+        #main {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        #container {
+            display: flex;
+            height: 100%;
+        }
+
+        #toolbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-transform: uppercase;
+            border-bottom: 1px solid #ddd;
+            padding: 0.5rem 0;
+        }
+
+        #toolbar button {
+            font-size: 14px;
+            border: 0;
+            background: transparent;
+            margin: 1rem;
+            color: #444;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        #nextLesson em {
+            font-size: 1.2em;
+            font-style: normal
+        }
+
+        #toolbar span {
+            min-width: 300px;
+            text-align: center;
+        }
+
+        #toolbar div {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        #toolbar button:disabled {
+            opacity: 0;
+        }
+
+        #editor,
+        #slide,
+        #playground {
+            height: 100%;
+            flex-grow: 1;
+            width: 50%;
+            display: none;
+        }
+
+        #slide {
+            align-items: center;
+            align-content: center;
+            justify-content: center;
+            justify-items: center;
+            width: 100%;
+        }
+
+        #playground {
+            background-color: #ddd;
+            border: 0;
+            display: none;
+        }
+
+        #lessonSubtitle {
+            text-transform: initial;
+            font-style: italic;
+            color: #444;
+        }
+    </style>
+</head>
+
+<body>
+    <!--- Lessons -->
+    <div style="display:none">
+
+        <pre class="lesson" data-title="Come closer if you can't see the code">
+class Codebase {
+
+    constructor(n) {
+        this.bugs = n;
+    }
+    
+    add(other) {
+        this.bugs += other.bugs;
+        return this;
+    }
+    
+    merge(other) {
+        this.bugs = this.bugs * other.bugs;
+        return this;
+    }
+}
+    
+const featureA = new Codebase(4);
+const featureB = new Codebase(2);
+const featureC = new Codebase(0);
+
+const result = featureA
+                .add(featureC)
+                .merge(featureB)
+                .add(featureA.merge(featureB))
+                .bugs;
+
+console.log('How many bugs are there?')
+</pre>
+
+
+        <div class="lesson info" data-title="Functional vs Reactive">
+            <div>
+                <img style="max-width:100vw; max-height: 100vh;" src='programming.png' />
+            </div>
+        </div>
+
+
+        <pre class="lesson" data-title="Programming paradigms" data-subtitle="We who are not as others">
+/**
+
+    Most common programing paradigms:        
+
+                       Data Mutation       Data & Code
+    ------------------------------------------------------
+    Procedural             Yes              Separate
+    ------------------------------------------------------
+    OOP                    Yes              Combined
+    -------------------------------------------------------
+    Functional             No               Separate
+
+*/
+
+</pre>
+
+        <pre class="lesson" data-title="Why functional programming?" data-subtitle="The Walkabout">
+/**            
+
+    What is functional programming?
+
+    Is a programming paradigm that treats computation as the evaluation of 
+    mathematical functions and avoids state changing and mutable data.
+
+
+    Why Functional programming?
+
+    1. Reduces state to minimum
+    2. More predictable and safer code
+    3. Controlled side effects
+    4. No mutations, no surprises
+    5. Testing code is very easy
+    6. Makes you write better OOP code!
+
+
+    Functional programming deals with just 3 concepts:
+
+    1. Functions    
+    2. Types
+    3. Composition of functions and types
+
+*/    
+</pre>
+
+        <pre class="lesson" data-title="Functional way" data-subtitle="Functions all the way down">
+/**            
+
+    1. //////////////// Low level functions ////////////////
+
+    -----------|=============|---------------
+    string ->  | toUpperCase | -> string
+    -----------|=============|---------------
+    
+
+
+    2. //////////////// Services ////////////////
+
+    data -> [ LOW LEVEL FUN ] -> [ LOW LEVEL FUN ] -> [ LOW LEVEL FUN ] -> data
+                 
+    -------------------------|=========|-------------------------------
+    data ->                  | SERVICE |                     -> data
+    -------------------------|=========|-------------------------------
+    
+
+    
+    3. //////////////// Features ////////////////
+
+    data -> [ SERVICE ] -> [ SERVICE ] -> [ SERVICE ] -> data
+    
+                               FEATURE
+    -------------------------|=========|-------------------------------
+                             | SERVICE |                        
+    data ->                  | SERVICE |                        -> data
+                             | SERVICE |                        
+    -------------------------|=========|-------------------------------
+
+
+
+    4. //////////////// Web App ////////////////
+    
+    data -> [ FEATURE ] -> [ FEATURE ] -> [ FEATURE ] -> data
+    
+                                APP
+    -------------------------|=========|-------------------------------
+                             | FEATURE | 
+    HttpRequest ->           | FEATURE |         -> HttpResponse
+                             | FEATURE | 
+    -------------------------|=========|-------------------------------
+
+*/    
+</pre>
+
+
+
+        <pre class="lesson" data-title="First class functions" data-subtitle="We who are just as others">
+'use strict';
+
+/**
+
+    In functional programming, functions are "first class" values, 
+    meaning they are just like any other value.
+
+    We can treat functions like any other values : 
+    * they may be stored in arrays, 
+    * passed around as function parameters, 
+    * returned from functions, 
+    * assigned to bindings.
+
+    The only difference is that they do stuff.
+
+    We don't need classes or interfaces to attach functions to. 
+    They are on their own.
+*/
+
+// a string
+const name = 'Stinky Pete';
+
+// a number 
+const luckyNumber = 7;
+
+// an object
+const credentials = { user: 'scott', password: 'tiger' }
+
+// a function 
+// ---------------|=======|---------------
+// number -> ||||||  FUN  |||||| -> number 
+// ---------------|=======|---------------
+const increment = x => x + 1;
+increment(10);
+
+
+// functions can be passed as parameters
+// ------------|========|---------------
+// FUN -> ||||||  FUN   |||||| -> array 
+// ------------|========|---------------
+const isPositive = x => x > 0;
+const numbers = [-1, 0, 2].filter(isPositive);
+
+
+// functions can be returned from functions    
+// -------------|=======|------------
+// number -> ||||  FUN  |||||| -> FUN
+// -------------|=======|------------
+const checkAge = minimum => age => age >= minimum;
+// const checkAge function(minimum) {
+//    return function (age) { return age >= minimum };
+// } 
+
+const age = 10;
+const minimum18 = checkAge(18); // returns new function
+const isOldEnough = minimum18(age); // returns result
+console.log(`Is ${age} years old enough?`, isOldEnough)
+
+
+
+
+////////////  Look mum, no ()'s  //////////////
+
+const hi = name => `Hi ${name}`;
+//console.log(hi);
+
+const greeting = name => hi(name);  // unnecessary function wrapper
+//const greeting = hi;              // Better!
+//const greeting = name => `Hi ${name}`;
+
+
+const httpCall = callback => {
+    let data = 'Joe'; // get name from somewhere
+    callback.call(null, data);
+};
+httpCall(x => hi(x))  // unnecessary function wrapper
+// httpCall(hi)       // Better!
+// httpCall(name => `Hi ${name}`) 
+
+        </pre>
+
+        <pre class="lesson" data-title="Pure functions" data-subtitle="I am the sword in the darkness">
+'use strict';        
+
+/**
+
+    A pure function is a function that, given the same input, will always 
+    return the same output and does not have any observable side effect.
+
+    This is one of simplest concept in programming.
+
+    --------------------|========|------------------
+     something -> |||||||  FUN   |||||| -> something
+    --------------------|========|------------------
+
+    Of course, not all the functions can be pure because we need 
+    side effects like:
+    * changing the file system
+    * inserting a record into a database
+    * making an http call
+    * rendering on the screen / logging
+    * obtaining user input
+    * changing system state
+
+    But we should prefer pure functions to impure ones when possible.
+*/
+
+// impure because it uses external bindings
+let counter = 1;
+const addImpure = n => counter += n;
+
+// pure
+const add = (n, counter) => counter + n; 
+
+
+
+// impure because it uses external bindings
+let minimum = 21;
+const checkAgeImpure = age => age >= minimum;
+
+// pure
+const checkAge = (age) => {
+    const minimum = 21;
+    return age >= minimum;
+};
+
+
+// impure because it causes side effects
+const checkAgeAndLog = age => {
+    const minimum = 21;
+    console.log(age);
+    return age >= minimum;
+};
+
+
+
+class User {
+   
+    constructor(name, password){
+        this.name = name;
+        this.password = password;
+    }
+
+    // impure because it uses this
+    login(db) {
+       db.login(this.name, this.password); 
+    }    
+}
+
+// pure
+const login = (db, user, password) => {
+    return db.login(user, password);
+}
+
+////// Testing is sooo easy /////
+
+const assert = (expected, result) => {
+    if(expected !== result)
+        throw new Error(`Assertion failed! Expected: ${expected} but got ${result}`)
+}
+// pure functions are very easy to test
+// since they don't depend on anything else
+assert(add(1,2), 3);
+
+</pre>
+
+
+        <pre class="lesson" data-title="Immutability" data-subtitle="U Can't Touch This">
+'use strict';     
+
+/**
+
+    In functional programming, data is immutable (or at least is treated so.)
+    
+    New data is created using existing data instead of mutating existing data.  
+    Objects in JavaScript are mutable by default but we can make them
+    immutable using Object.freeze() 
+    (https://github.com/substack/deep-freeze/blob/master/index.js)
+
+    Pros:
+    * No code can mutate data by mistake
+    * Detect object changes by comparing references 
+    * No concurency issues
+
+    Cons:
+    * Possible performance issues 
+
+*/
+
+// objects are mutable
+const state = {
+    loggedin : false,    
+}
+
+// instead of mutating the original object we create a new object
+const newState = {
+    ...state,
+    loggedin: true,
+    user: 'johnny'
+}
+
+const login = (state = {}, user) => {
+    return {
+        ...state,
+        loggedin: true,
+        user,
+    }
+}
+
+const stateAfterLogin = login(state, 'johnny')
+console.log('Original state', state)
+console.log('State after login', stateAfterLogin)
+
+
+
+///////  Arrays are mutable but they can used in a immutable way /////
+
+const numbers = [1, 2, 3];
+
+// instead of mutating original array we create a new array
+const newNumbers = [...numbers, 4];
+
+// built-in filter creates a new array
+const filteredNumbers = numbers.filter( n => n > 2);
+
+const addNumber = (numbers, newNumber) => [...numbers, newNumber]
+
+const removeNumber = (numbers, numberToRemove) =>
+    numbers && numbers.filter(n => n !== numberToRemove);
+    
+const replaceNumber = (numbers, numberToReplace, replacement) => 
+    numbers.map(x => x === numberToReplace ? replacement : x)
+
+
+
+const numbers1234 = addNumber(numbers, 4);
+const numbers134 = removeNumber(numbers1234, 2);
+const numbers154 = replaceNumber(numbers134, 3, 5);
+
+console.log('\n\nOriginal numbers', ...numbers);
+console.log('Final numbers', ...numbers154);
+
+
+</pre>
+        <pre class="lesson" data-title="Real world usage" data-subtitle="React & Redux">
+'use strict'; 
+
+/** 
+
+   React has functional components. 
+   These functions are pure: they receive input as "props" and generate a 
+   data structure as output.   
+
+ */ 
+function Welcome(props) {
+    return `Hello, {props.name}`;
+}
+
+// same as: 
+class Welcome extends React.Component {
+    render() {
+      return `Hello, ${this.props.name}`;
+    }
+}
+
+
+/**
+  Redux reducers are pure functions that receive as inputs the current state
+  and an action that changes state. It returns are new state.
+ */
+ function todoApp(state = initialState, action) {
+    switch (action.type) {
+      case SET_VISIBILITY_FILTER:
+        //...
+      case ADD_TODO:
+        return Object.assign({}, state, {
+          todos: [
+            ...state.todos,
+            {
+              text: action.text,
+              completed: false
+            }
+          ]
+        })
+      default:
+        return state
+    }
+}
+</pre>
+
+
+
+
+
+        <pre class="lesson" data-title="Composition" data-subtitle="Divided we fall, united we stand">
+'use strict';
+
+/**
+
+    Functional programming concepts:
+
+    1. Functions    
+    2. Types
+    3. Composition of functions and types
+
+    Let's see how we compose functions.        
+
+*/ 
+
+
+const toUpperCase = x => x.toUpperCase();
+const exclaim = x => `${x}!`;
+
+// String => STRING!
+const _shout = x => exclaim(toUpperCase(x))
+
+const __shout = x => {
+    const uppercased = toUpperCase(x);
+    const exclaimed = exclaim(uppercased);
+    return exclaimed;
+}
+
+
+// Here is an example of "compose" implementation
+// One day this may be replaced by the '|>' pipeline operator.
+const compose = (...fns) => arg => fns.reduce((res, fn) => fn.call(null, res), arg);
+
+// String => STRING!
+const shout = compose(
+    toUpperCase,
+    exclaim 
+);
+
+const bringOutTheGimp = shout('Bring Out the Gimp');
+console.log(bringOutTheGimp);
+
+///// Written using the future |> operator
+// bringOutTheGimp = 'Bring Out the Gimp' |> toUpperCase |> exclaim
+
+
+////// Another example: dasherize, an utility for URL generators
+
+const replaceWithSpace = s => s.replace(/\s{2,}/ig, ' ');
+const split = s => s.split(' ');
+const toLower = x => x.toLowerCase();
+
+// wish you were here => wish you were here
+const dasherize = compose(
+    replaceWithSpace,
+    split,
+    words => words.map(toLower),
+    words => words.join('-'),
+);
+
+const dasherized = dasherize('Wish You Were Here');
+console.log(dasherized)
+
+///// Written using the future |> operator
+/*
+     dasherize = 'Wish You Were Here' 
+                    |> replaceWithSpace 
+                    |> split 
+                    |> words => words.map(toLower) 
+                    |> words => words.join('-')
+*/
+
+
+</pre>
+
+
+        <pre class="lesson" data-title="Composition" data-subtitle="No round pegs in the square holes">
+'use strict';    
+
+/**
+
+    Not all the functions can be combined. 
+
+    1. Two functions can be composed only if the output type of one function
+        matches the input type of the next function
+
+-------------|========|--------------
+number ->|||||  FUN1  |||||-> string
+-------------|========|--------------
+-------------|========|--------------
+number ->|||||  FUN2  ||||||-> number
+-------------|========|--------------
+-------------|========|----------------
+string ->|||||  FUN3  |||||| -> string
+-------------|========|----------------
+
+
+
+Function 1 & 2 cannot be composed because the output 1 doesn't match input 2         
+-------------|========|-------------- X ---------------|========|--------------
+number ->|||||  FUN1  |||||-> string  X  number ->||||||  FUN2  ||||||-> number
+-------------|========|-------------- X ---------------|========|-------------
+
+
+
+Function 1 & 3 can be composed because the output 1 matches input 3
+-------------|========|-----------------------------|========|--------------
+number ->|||||  FUN1  |||||-> string=> string ->|||||  FUN3  |||||| -> string
+-------------|========|-----------------------------|========|-------------
+-------------|========+========|--------------
+number ->|||||  FUN1  +  FUN3  |||||| -> string
+-------------|========+========|-------------
+-------------|========|--------------
+number ->|||||  FUN13 |||||| -> string
+-------------|========|-------------
+
+
+    2. Two functions can be composed only if first function returns a single 
+        output and the second one accepts a single output.
+*/
+
+</pre>
+
+
+        <pre class="lesson" data-title="Currying"
+            data-subtitle="One of These Days I'm Going to Cut You into Little Pieces">
+'use strict';
+
+/**
+
+    One of the bigest problem in that we cannot compose functions with two or
+    more parameters. So what we do? Never use functions with more then one
+    parameter?
+
+    No. We use currying.
+
+    Currying means breaking a function with many arguments into a series of
+    functions that each take one argument and ultimately produce the same 
+    result as the original function.
+
+    Rewrite a function that takes 2 parameters
+    ---------------------|=========|-------------
+    number, number ->|||||   FUN   |||||-> boolean
+    ---------------------|=========|-------------
+
+    Into two functions that takes 1 parameter each:
+    -------------|========|---------------
+    number ->|||||  FUN1  |||||| -> FUN2
+    -------------|========|---------------
+    -------------|========|---------------
+    number ->|||||  FUN2  |||||| -> boolean
+    -------------|========|---------------
+*/
+
+////// Rewriting add
+let add;
+
+// original
+add = (x, y) => {
+    return x + y;
+};
+
+// using currying and regular functions
+add = function (x) {
+    return function(y) { return x + y }
+}
+
+// using currying and arrow functions
+add = x => y => x + y;
+
+const increment = add(1);
+const incrementBy2 = increment(2);
+
+const addToTen = add(10);
+const addedToTen = addToTen(2);
+
+console.log('Increment by 2', incrementBy2)
+console.log('Add 2 to 10', addedToTen)
+
+
+///// Another example: Censored
+
+// general purpose
+const replace = (regexp, replacement, str) =>
+                    replacement => str => str.replace(regexp, replacement)
+
+// specialized
+const replaceVowels = replace(/[aeiou]/ig); //regexp
+const censor = replaceVowels('*'); //replacement
+const censored = censor('Purple Rain'); //string
+
+console.log('\n\nCensored', censored);
+
+
+
+
+
+/// Another example: A Node.js argument parser
+
+const usage = `
+Expected arguments:
+--project  Project name
+--from     Source env
+--to       Destination env
+
+Usage example:
+node migrate.js --project apollo  --from dev --to qa
+`;
+
+// node.js arguments are received as an array
+// each parameter name is followed by a parameter value
+const args = [ '--project', 'dune', '--from', 'dev', '--to', 'qa' ]
+
+const findArgument = argument => args => {
+    const argumentIndex = args.findIndex(x => x === '--' + argument);
+    const argumentValue = args[argumentIndex + 1];
+    if (argumentIndex === -1 || /--/s.test(argumentValue) || !argumentValue) {
+      throw Error(`Invalid argument '${ argument }'`);
+    } else {
+      return argumentValue;
+    }
+};
+
+const findProject = findArgument('project');
+const findFrom = findArgument('from');
+const findTo = findArgument('to');
+
+try{
+    const project = findProject(args);
+    const from = findFrom(args);
+    const to = findTo(args);
+
+    // use arguments...
+}  
+catch (err) {
+    console.error(err.message, usage);
+}
+
+
+</pre>
+
+
+        <pre class="lesson" data-title="Curried dasherize" data-subtitle="Spice me up">
+'use strict';
+
+/**
+    
+    This is the previous version of "dasherize", with no currying:
+
+    const replaceWithSpace = s => s.replace(/\s{2,}/ig, ' ');
+    const split = s => s.split(' ');
+    const toLower = x => x.toLowerCase();    
+
+    // Wish You Were Here => wish-you-were-here
+    const dasherize = compose(
+        replaceWithSpace,
+        split,
+        words => words.map(toLower),
+        words => words.join('-'),
+    );
+
+
+    const dasherized = dasherize('Wish You Were Here');
+    console.log(dasherized)
+
+
+    As you can see we had to hardcode some stuff inside the functions
+    (e.g. /\s{2,}/ig or the split char) because the functions could
+    take only one parameter.
+    
+    We can fix that using curried versions of those funtions.
+*/
+
+const compose = (...fns) => arg => fns.reduce((res, fn) => fn.call(null, res), arg);
+
+const replace = (replacement, regexp, str) =>
+                    regexp => str => str.replace(regexp, replacement)
+
+const replaceWithSpace = replace(' ');
+const split = delimitator => s => s.split(delimitator);
+const toLower = x => x.toLowerCase();
+const intercalate = char => arr => arr.join(char);
+
+// Wish You Were Here => wish-you-were-here
+const dasherize = compose(
+    replaceWithSpace(/\s{2,}/ig),
+    split(' '),
+    words => words.map(toLower),
+    intercalate('-'),
+);
+
+const dasherized = dasherize('Wish You Were Here');
+console.log(dasherized)
+
+
+
+
+// We can reuse the functions to create other combinations
+// Wish You Were Here => W*SH*Y***W*R**H*R*
+const censor = compose(
+    replaceWithSpace(/[aeiou]/ig),
+    split(' '),
+    words => words.map(s => s.toUpperCase()),
+    intercalate('*'),
+);
+
+const censored = censor('Wish You Were Here');
+console.log(censored)
+
+</pre>
+
+        <pre class="lesson" data-title="Example app" data-subtitle="">
+'use strict';
+
+/**
+    "Functional core, imperative shell"
+    https://www.destroyallsoftware.com/talks/boundaries
+    
+    Every app has a pure part but also an impure one.
+*/
+
+const faceWithTearsOfJoy = '\uD83D\uDE02';
+
+// Pure
+const repeat = howManyTimes => str => str.repeat(howManyTimes);
+const repeat3 = repeat(3);
+const emojis = repeat3(faceWithTearsOfJoy);
+const textWithEmoji = emoji => joke => joke + emoji;
+const textWithTearsOfJoy = textWithEmoji(emojis);
+const joke = json => json.joke;
+
+const formatJoke = data => {
+    const jokeText = joke(data);
+    return textWithTearsOfJoy(jokeText);
+}
+
+
+// Impure
+const getJSON = url => fetch(url, { headers: {'Accept': 'application/json'}})
+
+const app = (url) => {
+    getJSON(url)
+        .then(result => result.json())
+        .then(json => formatJoke(json))
+        .then(x => console.log(`%c${x}`, "font-size: x-large"))
+}
+app('https://icanhazdadjoke.com/');
+
+</pre>
+
+
+
+        <pre class="lesson" data-title="Reactive JavaScript">
+/*
+
+██████╗ ███████╗ █████╗  ██████╗████████╗██╗██╗   ██╗███████╗                
+██╔══██╗██╔════╝██╔══██╗██╔════╝╚══██╔══╝██║██║   ██║██╔════╝                
+██████╔╝█████╗  ███████║██║        ██║   ██║██║   ██║█████╗                  
+██╔══██╗██╔══╝  ██╔══██║██║        ██║   ██║╚██╗ ██╔╝██╔══╝                  
+██║  ██║███████╗██║  ██║╚██████╗   ██║   ██║ ╚████╔╝ ███████╗                
+╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝   ╚═╝   ╚═╝  ╚═══╝  ╚══════╝                
+                                                                             
+     ██╗ █████╗ ██╗   ██╗ █████╗ ███████╗ ██████╗██████╗ ██╗██████╗ ████████╗
+     ██║██╔══██╗██║   ██║██╔══██╗██╔════╝██╔════╝██╔══██╗██║██╔══██╗╚══██╔══╝
+     ██║███████║██║   ██║███████║███████╗██║     ██████╔╝██║██████╔╝   ██║   
+██   ██║██╔══██║╚██╗ ██╔╝██╔══██║╚════██║██║     ██╔══██╗██║██╔═══╝    ██║   
+╚█████╔╝██║  ██║ ╚████╔╝ ██║  ██║███████║╚██████╗██║  ██║██║██║        ██║   
+ ╚════╝ ╚═╝  ╚═╝  ╚═══╝  ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝        ╚═╝   
+                                                                             
+*/
+        
+        </pre>
+
+        <pre class="lesson" data-title="How we get data" data-subtitle="I want it all, I want it now">
+'use strict';    
+
+/**
+
+    The four ways of getting data:        
+
+                     One                    Many
+    ------------------------------------------------
+    Sync              T                   Array[T]
+    ------------------------------------------------
+    Async           Promise[T]           Observable[T]
+
+*/
+
+// Sync, One
+const increment = a => a + 1;
+
+// Sync, Multiple
+const range = (start, end) => {
+    if(start === end) return [start];
+    return [start, ...range(start + 1, end)];
+}
+
+// Async, One
+const getJSON = url => {
+    return fetch(url, { headers: {'Accept': 'application/json'}})
+                .then(result => result.json())       
+}
+
+// Async, Many
+
+// 1. Event listener
+document.addEventListener('click', event => console.log(event))
+
+
+// 2. Event bus
+const pubsub = {
+    subscribe: (topic, func) => { }
+    //...
+} 
+pubsub.subscribe('notification', () => {})
+
+
+// 3. reactive
+rxjs.fromEvent(document, 'click').subscribe(e => console.log(e));
+
+
+</pre>
+
+        <pre class="lesson" data-title="What is Reactive programming?" data-subtitle="Everything is a stream">
+/**           
+
+    Reactive programming is programming with asynchronous data streams.
+
+    It's about how to handle many values that are received asynchronously like:
+    - network call responses
+    - all kind of notifications
+    - event busses
+    - keypresses
+    - mouse events  
+
+    If something can change and you are interested in responding to 
+    that change, you can use reactive programming.
+
+    For demo we use rxjs (https://rxjs-dev.firebaseapp.com/)
+
+*/    
+</pre>
+
+
+        <pre class="lesson!" data-title="Example" data-subtitle="Click click click">
+            'use strict';
+
+            // Easy to do some complicated things. For example this is how to allow at most
+            // one click per second:
+
+
+            ////// Plain JS
+
+            let count = 0, rate = 1000;
+            let lastClick = Date.now() - rate;
+            document.addEventListener('click', () => {
+            if (Date.now() - lastClick >= rate) {
+            console.log(`Clicked ${++count} times`);
+            lastClick = Date.now();
+            }
+            });
+
+
+            ////// Reactive
+
+            const { fromEvent } = rxjs;
+            const { throttleTime, scan } = rxjs.operators;
+
+            fromEvent(document, 'click')
+            .pipe(
+            throttleTime(1000),
+            scan(count => count + 1, 0)
+            )
+            .subscribe(count => console.log(`Clicked ${count} times`));
+
+            </pre>
+
+        <pre class="lesson" data-title="Observables" data-subtitle="Watching the watchers">
+'use strict';
+
+/**
+
+   Observables - collections of future values or events, streams of data.
+   To receive values from the stream you need to subscribe to it.
+   The stream is lazy, will not produce any values if there are no subscribers
+
+*/   
+
+const { Observable } = rxjs;
+ 
+const numbers = Observable.create(subscriber => {
+  subscriber.next(1);
+  subscriber.next(2);
+  subscriber.next(3);
+
+  setTimeout(() => {
+    subscriber.next('Techno!'); // happens asynchronously
+  }, 1000);
+  
+});
+ 
+console.log('==Before==');
+
+// setTimeout(() => {
+    numbers.subscribe(x => console.log(x));
+    console.log('===After==');
+// }, 1000);    
+</pre>
+
+
+
+        <pre class="lesson" data-title="Life cycle" data-subtitle="The Beginning of the End">
+'use strict';
+
+/** 
+
+    You can unsubscribe any time from a stream.
+    A stream can complete.
+    A stream can send errors, and you need to handle the errors.
+
+*/
+const lyrics = [
+  "Una mattina",
+  "mi son svegliato",
+  "o bella ciao,",
+  "bella ciao,",
+  "bella ciao ciao ciao!",  
+  "Una mattina",
+  "mi son svegliato",
+  "e ho trovato l'invasor."
+]
+
+const { Observable } = rxjs;
+
+const subtitles = Observable.create(subscriber => {
+    let seconds = 0;
+
+    const id = setInterval(() => {
+        try {             
+            if(lyrics[seconds]){
+                // send value on stream
+                subscriber.next((lyrics[seconds]));
+                seconds++
+            }    
+            else {
+                // complete stream
+                subscriber.complete();
+            }
+        }    
+        catch(e) {
+            // send error on stream, stream will complete
+            subscriber.error(e);
+        }   
+    }, 1000);        
+});
+
+
+const subscription = subtitles.subscribe(
+    x => console.log(x),
+    err => console.log('Erorr'),
+    () => console.log('==Complete==')
+);    
+
+// Unsubscribe, values will not longer be received
+// Useful when the UI component that is interested in changes is dismissed
+/*
+setTimeout(() => {
+    console.log('==Unsubscribe==');
+    subscription.unsubscribe();
+}, 4000);
+*/
+        
+
+        </pre>
+
+
+        <pre class="lesson" data-title="Streams from everything"
+            data-subtitle="If I had a hammer, I'd hammer in the morning, I'd hammer in the evening">
+'use strict';
+
+/**
+
+    There are several ways to create streams.
+    You can adapt all kind of data sources to streams.
+
+*/
+const { of, from, fromEvent, interval } = rxjs;
+
+const numbers = of([1,2,3]); // from vs of
+//numbers.subscribe(console.log)
+
+const letters = from('hello'); // from vs of
+//letters.subscribe(console.log)
+
+const clicks = fromEvent(document, 'click');
+
+const counter = interval(1000);
+
+</pre>
+
+
+        <pre class="lesson" data-title="Multiple subscribers" data-subtitle="Whatever you need, we've got you covered">
+'use strict';
+
+const { Observable, Subject, BehaviorSubject } = rxjs;
+
+// Observable creates a different stream for each subscriber
+const single = Observable.create(sbscr => sbscr.next(Math.random()));
+
+console.log('==Each subscriber receives different value==')
+single.subscribe(console.log)
+single.subscribe(console.log)
+
+
+
+///////  Multi subscriber streams  //////
+console.log('\n==Subject==')
+
+// Subject: All subscribers receive same values (one stream)
+
+const subject = new Subject();
+subject.subscribe(x => console.log('Subscriber1', x))
+subject.subscribe(x => console.log('Subscriber2', x))
+
+subject.next(Math.random())
+
+// Later subscribers don't receive previous stream values
+subject.subscribe(x => console.log('Subscriber3', x)) 
+
+
+
+
+// Behaviour Subject - similar to Subject but has a 'current value'
+console.log('\n==Behaviour Subject==')
+
+const behavior = new BehaviorSubject();
+
+// Even if there are no values on the stream,
+// subscribers are called with the current value, undefined
+behavior.subscribe(x => console.log('Subscriber1', x)) // current value
+behavior.subscribe(x => console.log('Subscriber2', x)) // current value
+
+behavior.next(Math.random())
+
+behavior.subscribe(x => console.log('Subscriber3', x)) // current value
+
+
+</pre>
+
+        <pre class="lesson" data-title="Operators" data-subtitle="No need to ask, he's a smooth operator">
+'use strict';        
+
+/**
+   
+    The good
+    -------------
+    There are many operators you can use for various situations.
+    
+    The bad
+    -------------
+    You need to know what all those operators do and which one to use.
+    Codebase is hard to understand for people who don't know the operators. 
+
+
+    Use the "Operator decision tree"
+    https://rxjs-dev.firebaseapp.com/operator-decision-tree
+*/
+
+const { from, merge, interval } = rxjs;
+const { filter, map, scan, take, tap } = rxjs.operators;
+
+
+const numbersStream = from([4, 8, 15, 16, 23, 42]);
+
+console.log('\n==Doubles==')
+const doublesStream = numbersStream.pipe(
+        // tap(console.log),    
+        map(x => x * 2), 
+        // tap(console.log),    
+        filter(x => x > 3),
+        scan((acc, val) => acc + val),
+        take(3)
+    );
+
+doublesStream.subscribe(v => console.log('Doubles: ', v));
+
+// Capitalize
+const lettersStream = from("lost");
+const capitalizedStream = lettersStream.pipe(
+    map(v => v.toUpperCase()) 
+)
+
+/// Merge streams
+const lettersAndNumbersStream = merge(capitalizedStream, numbersStream);
+console.log('\n==Merged==')
+lettersAndNumbersStream.subscribe(console.log)
+                
+            
+
+</pre>
+
+        <pre class="lesson" data-title="Cancelling requests" data-subtitle="Now you're talking!">
+'use strict'; 
+
+/**
+    
+    There are two important differences between a Promise and a Observable:
+    1. Promise returns one value - Observables zero, one or more
+    2. Promises always return something - Observables can be cancelled
+
+    switchMap operators allows you to switch from one stream to another
+*/ 
+
+const url = lang => `https://github-trending-api.now.sh/repositories?language=${lang}`;
+const authorUrl = repo =>`https://api.github.com/users/${repo.author}`
+
+const author = url => 
+    fetch(url)
+        .then(response => response.json())
+
+const trending = url => 
+    fetch(url)
+        .then(response => response.json())
+        .then(repos => repos[0])
+        .then(repo => author(authorUrl(repo)))
+        .then(response => response.login)
+        
+const showMe = lang => {
+    trending(url(lang)).then(x => console.log('Promise', x));
+} 
+showMe('javascript')
+showMe('java')
+showMe('python')
+    
+   
+//////// Observables 
+
+const { from, Subject } = rxjs;
+const { tap, switchMap } = rxjs.operators;
+
+const subject = new Subject();
+
+const switched = subject.pipe(    
+    switchMap(url => from(trending(url))),
+);
+switched.subscribe(x => console.log('Observable', x))
+
+const showMeLast = lang => subject.next(url(lang));
+showMeLast('javascript')
+showMeLast('java')
+showMeLast('python')
+                 
+            
+
+</pre>
+
+
+
+
+        <pre class="lesson" data-title="Functional thinking"
+            data-subtitle="It's a Long Way to the Top (If You Wanna Rock 'n' Roll)">
+/*
+
+    Level One: Distiction of impure actions, pure functions and data.
+    ------------------------------------------------------------------
+    * Actions depend on time, depend on the world and change the world
+    * Pure functions transform inputs to outputs, don't depend on time 
+    or the world and don't change the world
+    * Data is facts about events, doesn't do anything, it just is.
+
+
+    Level Two: Higher order thinking
+    ---------------------------------
+    * Using functions as values
+    * Higher order functions
+    * Composing data transformation
+
+
+    Functional style programming
+================================================================================  
+    Functional programming
+
+
+    Level Three: Algebraic thinking
+    --------------------------------
+    * Maybe
+    * Either
+    * Functors
+    * Semigroups
+    * Monoids    
+    * Monads
+    * Tasks
+
+*/
+</pre>
+
+
+
+
+    </div>
+    <!--- End Lessons -->
+    <div id="main">
+        <div id="toolbar">
+            <button id="previousLesson">Previous</button>
+            <div>
+                <span id="lessonTitle">Toolbar</span>
+                <span id="lessonSubtitle">Welcome to the machine</span>
+            </div>
+            <button id="nextLesson">Next <em>➔</em></button>
+        </div>
+        <div id="container">
+            <div id="slide"></div>
+            <div id="editor"></div>
+            <textarea id="playground" readonly="readonly" disabled="disabled"></textarea>
+        </div>
+    </div>
+
+    <script src="lib/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="navigation.js" type="text/javascript" charset="utf-8"></script>
+    <script src="evaluation.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        // Required scripts
+        const imports = ['https://unpkg.com/rxjs@6.5.3/bundles/rxjs.umd.min.js'];
+
+        // Ace editor config
+        const editor = ace.edit("editor");
+        editor.setTheme("ace/theme/sqlserver"); // chrome, mono_industrial, sqlserver, textmate, xcode
+        editor.session.setMode("ace/mode/javascript");
+
+        editor.setOptions({ fontSize: "13pt" });
+        editor.focus();
+
+        // handle response
+        const evalCallback = data => {
+            const { result, msg, lineNo } = data;
+            if (msg) {
+                editor.session.setAnnotations([{
+                    row: lineNo - 1,
+                    column: 0,
+                    text: msg,
+                    type: "error"
+                }]);
+            }
+        }
+
+        // evaluate code on change
+        editor.session.on('change', _ => {
+            const code = editor.getValue();
+            editor.session.clearAnnotations();
+            evaluateCode(code, imports, evalCallback); // Eval code
+        });
+
+        // error hanlder, just in case
+        window.onerror = function (msg, url, lineNo, columnNo, error) {
+            console.log(msg, url, lineNo, columnNo, error);
+        }
+
+    </script>
+</body>
+
+</html>
